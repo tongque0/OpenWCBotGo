@@ -25,11 +25,6 @@ func Init() {
 		fmt.Println(err)
 		return
 	}
-	// 登陆
-	if err := bot.Login(); err != nil {
-		fmt.Println(err)
-		return
-	}
 
 	// 获取登陆的用户
 	self, err := bot.GetCurrentUser()
