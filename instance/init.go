@@ -2,6 +2,7 @@ package instance
 
 import (
 	"fmt"
+	task "openWcBotGo/Task"
 
 	"github.com/eatmoreapple/openwechat"
 	"github.com/skip2/go-qrcode"
@@ -32,7 +33,8 @@ func Init() {
 		fmt.Println(err)
 		return
 	}
-
+	//定时任务管理器
+	go task.TaskManager(self)
 	// 获取所有的好友
 	friends, err := self.Friends()
 	fmt.Println(friends, err)

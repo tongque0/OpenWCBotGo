@@ -11,6 +11,10 @@ func reciver(msg *openwechat.Message) {
 	if !AuthMiddleware(msg) {
 		return
 	}
+	go handleMessage(msg)
+}
+
+func handleMessage(msg *openwechat.Message) {
 	if msg.IsText() {
 		LLM.ChatOpenai(msg)
 	} else if msg.IsPicture() {

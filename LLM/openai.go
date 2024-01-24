@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"openWcBotGo/config"
-	"strings"
 
 	"github.com/eatmoreapple/openwechat"
 
@@ -60,25 +59,18 @@ func ChatOpenai(msg *openwechat.Message) {
 		}
 
 		accumulatedResponse += response.Choices[0].Delta.Content
-		validResponse := strings.ToValidUTF8(accumulatedResponse, "")
-		for len([]rune(validResponse)) > 50 {
-			pos := strings.IndexAny(validResponse, "。！？!.?")
-			if pos == -1 {
-				break
+		runes := []rune(accumulatedResponse)
+		if len(runes) >= 30 {
+			lastChar := runes[len(runes)-1]
+			// 检查最后一个字符是否为标点符号
+			if lastChar == '。' || lastChar == '？' || lastChar == '！' {
+				msg.ReplyText(accumulatedResponse)
+				accumulatedResponse = ""
 			}
-
-			// 发送有效的 UTF-8 字符串
-			msg.ReplyText(validResponse[:pos+1])
-			validResponse = validResponse[pos+1:]
-		}
-
-		if len([]rune(validResponse)) > 50 {
-			msg.ReplyText(validResponse)
-			validResponse = ""
 		}
 	}
 
-	if len([]rune(accumulatedResponse)) > 0 {
-		msg.ReplyText(strings.ToValidUTF8(accumulatedResponse, ""))
+	if len(accumulatedResponse) > 0 {
+		msg.ReplyText(accumulatedResponse)
 	}
 }
